@@ -1,0 +1,26 @@
+{
+  "name": "http-playback",
+  "version": "1.0.0",
+  "description": "Play-back data over an HTTP streaming interface at the speed of your choice.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/swift-nav/http-playback"
+  },
+  "bin": {
+    "http-playback": "./http-playback.js"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "keywords": [
+    "playback",
+    "binary",
+    "stream"
+  ],
+  "author": "Joshua Gross <joshua.gross@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.9.0"
+  }
+}
