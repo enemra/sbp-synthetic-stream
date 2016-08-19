@@ -1,55 +1,41 @@
-# http-playback
+# sbp-synthetic-stream
 
-Playback a file's contents over HTTP, at a configurable speed. Useful for simulating live data streams with canned inputs.
+Construct synthetic SBP position solution streams. Plays the stream(s) over a readable stream or HTTP.
+
+You may specify points to interpolate between, to simulate a path. The paths will be randomly jittered and playback at the rate
+that you specify.
 
 ## Install
 Install as a dependency to a project:
 
 ```shell
-npm install --save http-playback
+npm install --save sbp-synthetic-stream
 ```
 
 Install CLI tool globally:
 
 ```shell
-npm install --global http-playback
+npm install --global sbp-synthetic-stream
 ```
 
 ## Using the command-line tool
 ```shell
-http-playback --port 8080 --chunk-size 32 --delay 500 --filename sample.file
+sbp-synthetic-stream --path "37.7755898502N,-122.511541278E,60;37.886690N,-121.155E,61" --streams 3 --ports 8080,8081,8082 --time 10m
 ```
 
 Test with curl:
 
 ```shell
-curl -vN http://localhost:8080
+curl -vN http://localhost:8080 | sbp2json
+curl -vN http://localhost:8081 | sbp2json
+curl -vN http://localhost:8082 | sbp2json
 ```
+
+You can install [`sbp2json` here](https://github.com/swift-nav/libsbp) via the Haskell project.
 
 ## Programmatic Use
 
-You can also use `http-playback` in your own code:
-
-```javascript
-var httpPlayback = require('http-playback');
-
-var buffer = ...;
-
-var options = {
-  port: 8080,
-  buffer: buffer, // you can provide your own buffer, or...
-  filename: '/path/to/file',
-  chunkSize: 32, // size, in bytes, of chunks
-  delay: 500 // delay, in milliseconds, between sending chunks
-};
-
-httpPlayback(options, function (err, server) {
-  // kill server after a delay
-  setTimeout(function () {
-    server.close();
-  }, 5000);
-});
-```
+TBD
 
 ## License
 MIT license. See `LICENSE` file.

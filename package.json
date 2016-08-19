@@ -1,26 +1,31 @@
 {
-  "name": "http-playback",
+  "name": "sbp-synthetic-stream",
   "version": "1.0.0",
-  "description": "Play-back data over an HTTP streaming interface at the speed of your choice.",
+  "description": "Construct synthetic SBP position solution streams. Plays the stream(s) over a readable stream or HTTP.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/swift-nav/http-playback"
+    "url": "https://github.com/swift-nav/sbp-synthetic-stream"
   },
   "bin": {
-    "http-playback": "./http-playback.js"
+    "sbp-synthetic-stream": "./cli.js"
   },
   "scripts": {
     "test": "mocha -R spec"
   },
   "keywords": [
-    "playback",
     "binary",
-    "stream"
+    "sbp",
+    "stream",
+    "synthetic"
   ],
   "author": "Joshua Gross <joshua.gross@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "commander": "^2.9.0"
+    "commander": "^2.9.0",
+    "ecef-projector": "^1.0.0",
+    "libsbp": "^1.1.1",
+    "moment": "^2.14.1",
+    "parse-duration": "^0.1.1"
   }
 }
