@@ -119,8 +119,8 @@ module.exports = function (points, numStreams, hz, timeDuration) {
   if (parseInt(numStreams) != numStreams) {
     throw new Error('`numStreams` must be an integer value');
   }
-  if (parseInt(hz) != hz) {
-    throw new Error('`hz` must be an integer value');
+  if (parseFloat(hz) != hz) {
+    throw new Error('`hz` must be a number');
   }
   if (parseInt(timeDuration) != timeDuration) {
     throw new Error('`timeDuration` must be an integer value');
