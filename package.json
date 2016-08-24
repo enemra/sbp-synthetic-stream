@@ -1,17 +1,18 @@
 {
   "name": "sbp-synthetic-stream",
-  "version": "1.0.1",
+  "version": "1.1.1",
   "description": "Construct synthetic SBP position solution streams. Plays the stream(s) over a readable stream or HTTP.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/swift-nav/sbp-synthetic-stream"
   },
   "bin": {
-    "sbp-synthetic-stream": "./cli.js"
+    "sbp-synthetic-stream": "./lib/cli.js"
   },
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "mocha -R spec",
+    "build": "babel src -d lib"
   },
   "keywords": [
     "binary",
@@ -27,5 +28,9 @@
     "libsbp": "^1.1.1",
     "moment": "^2.14.1",
     "parse-duration": "^0.1.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4",
+    "babel-preset-es2015": "^6.13.2"
   }
 }
