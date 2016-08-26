@@ -146,6 +146,10 @@ module.exports = function (points, numStreams, hz, timeDuration) {
     const currentLLA = points[currentPoint];
     const nextLLA = points[nextPoint];
 
+    if (!(currentLLA && nextLLA)) {
+      return;
+    }
+
     const lat = (currentLLA.lat + (nextLLA.lat - currentLLA.lat) * transitionFactor);
     const lng = (currentLLA.lng + (nextLLA.lng - currentLLA.lng) * transitionFactor);
     const alt = (currentLLA.alt + (nextLLA.alt - currentLLA.alt) * transitionFactor);
