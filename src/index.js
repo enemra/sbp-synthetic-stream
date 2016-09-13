@@ -50,7 +50,7 @@ function momentGpsTimestampToWnTow (gpsTimestamp) {
  * @param {Number} lng - longitude in degrees
  * @param {String} lngPole - longitude pole: 'W' or 'E'
  */
-function LLA (lat, latPole, lng, lngPole, alt) {
+export function LLA (lat, latPole, lng, lngPole, alt) {
   if (typeof lat !== 'number' || typeof lng !== 'number' || typeof alt !== 'number') {
     throw new Error('lat, lng, alt must all be Numbers: '
                     + typeof lat + ' ' + typeof lng + ' ' + typeof alt);
@@ -91,16 +91,16 @@ function lla2ecef(lla) {
   return new ECEF(v[0], v[1], v[2]);
 }
 
-function jitterLat() {
-  return Math.random() * 0.001;
+function jitterLat(factor) {
+  return Math.random() * factor;
 }
 
-function jitterLng() {
-  return Math.random() * 0.001;
+function jitterLng(factor) {
+  return Math.random() * factor;
 }
 
-function jitterAlt() {
-  return Math.random() * 0.01;
+function jitterAlt(factor) {
+  return Math.random() * factor;
 }
 
 /**
@@ -111,8 +111,11 @@ function jitterAlt() {
  * @param {Number} numStreams A number representing the number of SBP readable streams to generate
  * @param {Number} hz The frequency in hertz of stream updates
  * @param {Number} timeDuration The time to complete streams. In milliseconds.
+ * @param {Number} jflat Jitter factor for latitude
+ * @param {Number} jflng Jitter factor for longitude
+ * @param {Number} jfalt Jitter factor for altitude
  */
-module.exports = function (points, numStreams, hz, timeDuration) {
+export default function sbpSyntheticStream (points, numStreams, hz, timeDuration, jflat=0.001, jflng=0.001, jfalt=0.01) {
   if (!Array.isArray(points)) {
     throw new Error('`points` must be an array');
   }
@@ -121,6 +124,15 @@ module.exports = function (points, numStreams, hz, timeDuration) {
   }
   if (parseFloat(hz) != hz) {
     throw new Error('`hz` must be a number');
+  }
+  if (parseFloat(jflat) != jflat) {
+    throw new Error('`jflat` must be a number');
+  }
+  if (parseFloat(jflng) != jflng) {
+    throw new Error('`jflng` must be a number');
+  }
+  if (parseFloat(jfalt) != jfalt) {
+    throw new Error('`jfalt` must be a number');
   }
   if (parseInt(timeDuration) != timeDuration) {
     throw new Error('`timeDuration` must be an integer value');
@@ -162,7 +174,9 @@ module.exports = function (points, numStreams, hz, timeDuration) {
     }).toBuffer();
 
     const jitterPositionMsg = function () {
-      const lla = new LLA(lat + jitterLat(), 'N', lng + jitterLat(), 'E', alt + jitterAlt());
+      const lla = new LLA(lat + jitterLat(jflat), 'N',
+                          lng + jitterLng(jflng), 'E',
+                          alt + jitterAlt(jfalt));
       const ecef = lla2ecef(lla);
 
       const msgLla = constructMsg(MsgPosLlh, {
@@ -207,5 +221,4 @@ module.exports = function (points, numStreams, hz, timeDuration) {
   return streams;
 };
 
-module.exports.version = pkg.version;
-module.exports.LLA = LLA;
+export const version = pkg.version;
