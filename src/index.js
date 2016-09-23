@@ -104,6 +104,20 @@ function jitterAlt(factor) {
 }
 
 /**
+ * Ensure that points passed with `lng` or `lon` both work.
+ */
+function normalizePoint (pt) {
+  if (!pt) {
+    return pt;
+  }
+
+  return Object.assign({}, pt, {
+    lng: pt.lng || pt.lon,
+    lon: pt.lng || pt.lon
+  });
+}
+
+/**
  * Start N SBP streams, interpolating between LLA points.
  * Will open HTTP ports as well, if specified.
  *
@@ -155,8 +169,8 @@ export default function sbpSyntheticStream (points, numStreams, hz, timeDuration
     const nextPoint = currentPoint + 1;
     const transitionFactor = 1 - (nextPoint - unroundedCurrentPoint);
 
-    const currentLLA = points[currentPoint];
-    const nextLLA = points[nextPoint];
+    const currentLLA = normalizePoint(points[currentPoint]);
+    const nextLLA = normalizePoint(points[nextPoint]);
 
     if (!(currentLLA && nextLLA)) {
       return;
