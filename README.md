@@ -20,7 +20,7 @@ npm install --global sbp-synthetic-stream
 
 ## Using the command-line tool
 ```shell
-sbp-synthetic-stream --path "37.7755898502N,-122.511541278E,60;37.886690N,-121.155E,61" --streams 3 --ports 8080,8081,8082 --time 10m
+sbp-synthetic-stream --path "37.7755898502N,-122.511541278E,60;37.886690N,-121.155E,61" --num-streams 3 --ports 8080,8081,8082 --duration 10m --hz 2
 ```
 
 Test with curl:

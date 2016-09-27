@@ -12,11 +12,10 @@
 
 "use strict";
 
-const http = require('http');
-const commander = require('commander');
-const lib = require('./index.js');
-const parseDuration = require('parse-duration');
-const LLA = lib.LLA;
+import http from 'http';
+import commander from 'commander';
+import parseDuration from 'parse-duration';
+import lib, { LLA } from './index';
 
 function parsePorts (s) {
   return s.split(',').map(function (d) {
@@ -40,7 +39,7 @@ commander
   .version(lib.version)
   .option('-s, --path <p1,p2,p3>', 'Points to interpolate between, semicolon-separated, in LLA format: lat, long, altitude (meters)', parseLLAs)
   .option('-p, --ports <p1,p2,p3>', 'Port(s) to open HTTP server on local machine, comma-separated', parsePorts)
-  .option('-n, --numStreams <n>', 'Number of SBP streams', parseInt)
+  .option('-n, --num-streams <n>', 'Number of SBP streams', parseInt)
   .option('-z, --hz <n>', 'Speed in hertz of updates', parseInt)
   .option('-d, --duration <s>', 'Time to finish streams', parseDuration)
   .parse(process.argv);
