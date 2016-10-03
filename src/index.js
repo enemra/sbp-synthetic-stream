@@ -11,34 +11,15 @@
 
 "use strict";
 
-const net = require('net');
-const pkg = require('../package.json');
-const PassThru = require('stream').PassThrough;
+import net from 'net';
+import { PassThrough } from 'stream';
+import projector from 'ecef-projector';
+import { utcTimestampToWnTow } from 'gpstime';
+import pkg from '../package.json';
+import constructMsg from'libsbp/javascript/sbp/construct';
+import libsbpNavigation from 'libsbp/javascript/sbp/navigation';
 
-const projector = require('ecef-projector');
-
-const constructMsg = require('libsbp/javascript/sbp/construct');
-const libsbpNavigation = require('libsbp/javascript/sbp/navigation');
-const MsgPosLlh = libsbpNavigation.MsgPosLlh;
-const MsgPosEcef = libsbpNavigation.MsgPosEcef;
-const MsgGpsTime = libsbpNavigation.MsgGpsTime;
-
-const moment = require('moment');
-
-/**
- * Convert GPS moment timestamp (in GPS time, without leap seconds) to { wn, tow }.
- *
- * @param {moment} gpsTimestamp - A `moment` object representing a GPS timestamp, without leap-seconds.
- * @return {object} { wn, tow }
- */
-function momentGpsTimestampToWnTow (gpsTimestamp) {
-  const gpsEpochSeconds = 315964800;
-  const weekSeconds = (60 * 60 * 24 * 7);
-  const gpsTimeMs = gpsTimestamp.unix() - gpsEpochSeconds;
-  const wn = Math.floor(gpsTimeMs / weekSeconds);
-  const tow = gpsTimeMs - wn * weekSeconds;
-  return { wn, tow };
-}
+const { MsgPosLlh, MsgPosEcef, MsgGpsTime } = libsbpNavigation;
 
 /**
  * lat, long, ellipsoid altitude
@@ -153,16 +134,16 @@ export default function sbpSyntheticStream (points, numStreams, hz, timeDuration
   }
 
   const streams = new Array(numStreams).fill(0).map(function () {
-    return new PassThru();
+    return new PassThrough();
   });
 
   const hertzDelay = 1000 / hz;
   const numPoints = points.length;
-  const startTime = Date.now();
+  const startTime = new Date();
 
   const hertzInterval = setInterval(function () {
-    const currentTime = Date.now();
-    const { tow, wn } = momentGpsTimestampToWnTow(moment(currentTime));
+    const currentTime = new Date();
+    const { tow, wn } = utcTimestampToWnTow(currentTime);
     const progress = (currentTime - startTime) / timeDuration;
     const unroundedCurrentPoint = progress * (numPoints - 1);
     const currentPoint = Math.floor(unroundedCurrentPoint);
@@ -227,9 +208,7 @@ export default function sbpSyntheticStream (points, numStreams, hz, timeDuration
 
   setTimeout(function () {
     clearInterval(hertzInterval);
-    streams.map(function (s) {
-      s.end();
-    });
+    streams.map(s => s.end());
   }, timeDuration);
 
   return streams;

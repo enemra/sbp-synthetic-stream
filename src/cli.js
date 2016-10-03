@@ -53,5 +53,8 @@ for (let i = 0; i < (commander.ports && commander.ports.length || 0); i++) {
   const responder = function (req, res) {
     stream.pipe(res);
   };
-  http.createServer(responder).listen(port);
+  const server = http.createServer(responder).listen(port);
+
+  // `finish` is called because `.end` is called on the stream.
+  stream.on('finish', () => server.close());
 }
